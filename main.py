@@ -19,7 +19,8 @@ status = ap.ifconfig()
 
 # Open socket
 # Default address => 192.168.4.1
-addr = (status[0], 80)
+ip = status[0]
+addr = (ip, 80)
 s = socket.socket()
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind(addr)
@@ -42,7 +43,8 @@ while True:
   raw_request = raw_request.decode("utf-8")
   split_request = raw_request.split()
   if len(split_request) > 1:
-    request_url = raw_request.split()[1]
+    print(raw_request)
+    request_url = split_request[1]
 
     # LED 1
     if request_url.find("/led1on") != -1:
@@ -86,5 +88,5 @@ while True:
     html = html.replace('**path1**', led1_path)
     html = html.replace('**state2**', led2_str)
     html = html.replace('**path2**', led2_path)
-    client.send(html)
+    client.sendall(html)
   client.close()
