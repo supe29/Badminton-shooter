@@ -1,219 +1,225 @@
-import network
-import socket
 import json
-import machine
-import sdcard
-import uos
+from MicroSD import MicroSD
+from Shooter import Shooter
+from AccessPoint import AccessPoint
+import _thread
 
-# Assign chip select (CS) pin (and start it high)
-cs = machine.Pin(1, machine.Pin.OUT)
-
-# Intialize SPI peripheral (start with 1 MHz)
-spi = machine.SPI(0,
-                  baudrate=1000000,
-                  polarity=0,
-                  phase=0,
-                  bits=8,
-                  firstbit=machine.SPI.MSB,
-                  sck=machine.Pin(2),
-                  mosi=machine.Pin(3),
-                  miso=machine.Pin(0))
-
-# Initialize SD card
-sd = sdcard.SDCard(spi, cs)
-
-# Mount filesystem
-vfs = uos.VfsFat(sd)
-uos.mount(vfs, "/sd")
-
-ssid = 'BadmintonShooter'
-password = '1234567890'
-
-ap = network.WLAN(network.AP_IF)
-ap.config(essid=ssid, password=password)
-ap.active(True)
-
-# Wait for wifi
-while ap.active() == False:
-  time.sleep(0.5)
-  pass
-
-print('WiFi active')
-status = ap.ifconfig()
-
-# Open socket
-# Default address => 192.168.4.1
-ip = status[0]
-addr = (ip, 80)
-s = socket.socket()
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(addr)
-s.listen(1)
-print('listening on', addr)
+c_speed = 0
+c_angle = 0
+c_slope = 0
+c_height = 0
+speed_duty = 0
+angle_duty = 0
+slope_duty = 0
+height_val = 0
 home = '/sd/home.html'
-
+default_config = '/sd/default.json'
 areas = []
-for i in range(49):
-  areas.append({
-    'id': i + 1,
-    'shots': [{
-      'name': 'lob',
-      'config': {
-        'speed': 0,
-        'angle': 0,
-        'slope': 0,
-        'height': 0
-      }
-    },{
-      'name': 'drive',
-      'config': {
-        'speed': 0,
-        'angle': 0,
-        'slope': 0,
-        'height': 0
-      }
-    },{
-      'name': 'smash',
-      'config': {
-        'speed': 0,
-        'angle': 0,
-        'slope': 0,
-        'height': 0
-      }
-    }]
-  })
 
-# Main loop
-test = True
-while test:
-  client, client_addr = s.accept()
-  raw_request = client.recv(1024)
+def int_val(str, min, max):
+  try:
+    s = int(str)
+  except ValueError:
+    s = -1
+  if s < min or s > max:
+    s = -1
+  return s
 
-  # translate byte string to normal string variable
-  raw_request = raw_request.decode("utf-8")
-  split_request = raw_request.split()
-  print(raw_request)
-  if len(split_request) > 1:
-    method = split_request[0]
-    path = split_request[1]
-    if path == '/':
-      with open(home, 'r') as file:
-        html = file.read()
-      client.sendall(html.encode('utf-8'))
-    elif path.startswith('/area'):
-      if method == 'GET':
-        if len(path) == 5:
-          client.sendall(json.dumps(areas, separators=(',', ':')).encode('utf-8'))
-        else:
-          rpath = path[6:]
-          if '/' in rpath:
-            sp = rpath.split('/')
-            try:
-              area = next((a for a in areas if a['id'] == int(sp[0])))
-            except StopIteration:
-              area = None
-            if area is not None:
-              try:
-                shot = next((s for s in area['shots'] if s['name'] == sp[1]))
-              except StopIteration:
-                shot = None
-              if shot is not None:
-                client.sendall(json.dumps(shot, separators=(',', ':')).encode('utf-8'))
-              else:
-                # Not implemented yet
-                msg = '{"message":"Shot not found"}'
-                client.sendall(msg.encode('utf-8'))
-            else:
-              # Not implemented yet
-              msg = '{"message":"Area not found"}'
-              client.sendall(msg.encode('utf-8'))
+def get(arr, key, val):
+  try:
+    return next((a for a in arr if a[key] == val))
+  except StopIteration:
+    return None
+
+def find_obj(areas, str):
+  sp = str.split('/')
+  area = get(areas, 'id', int(sp[0]))
+  if area is not None:
+    if '/' in str:
+      shot = get(area['shots'], 'name', sp[1])
+      if shot is not None:
+        return {'code': 0, 'msg': 'Shot ' + sp[1] + ' was found', 'area': sp[0], 'shot': sp[1], 'obj': shot, 'area': sp[0], 'shot': sp[1], 'par': area['shots']}
+      else:
+        return {'code': 1, 'msg': 'Shot ' + sp[1] + ' was not found', 'area': sp[0], 'shot': sp[1], 'obj': area}
+    else:
+      return {'code': 2, 'msg': 'Area ' + sp[0] + ' was found', 'area': str, 'obj': area}
+  else:
+    return {'code': 3, 'msg': 'Area ' + sp[0] + ' was not found', 'area': str, 'obj': None}
+
+def save(a):
+  areas_json = json.dumps(a)
+  with open(default_config, 'w') as file:
+    file.write(areas_json)
+  print('saved')
+
+def run_cycle():
+  Shooter.init()
+
+def check_params(p):
+  ret_value = 0
+
+  # Speed
+  x = int_val(p['speed'], 0, 100)
+  if x == -1:
+    ret_value = 1
+
+  # Angle
+  x = int_val(p['angle'], 0, 180)
+  if x == -1:
+    ret_value += 2
+
+  # Slope
+  x = int_val(p['slope'], 0, 180)
+  if x == -1:
+    ret_value += 4
+
+  # Height
+  x = int_val(p['height'], 0, 40)
+  if x == -1:
+    ret_value += 8
+
+  return ret_value
+
+def main():
+  test = True
+  while test:
+    client, client_addr = AccessPoint.sock.accept()
+    raw_request = client.recv(1024)
+
+    # translate byte string to normal string variable
+    raw_request = raw_request.decode("utf-8")
+    split_request = raw_request.split()
+    print(raw_request)
+    if len(split_request) > 1:
+      method = split_request[0]
+      path = split_request[1]
+      if path == '/':
+        with open(home, 'r') as file:
+          html = file.read()
+        client.sendall(html.encode('utf-8'))
+      elif path.startswith('/area'):
+        if method == 'GET':
+          if len(path) == 5:
+            client.sendall(json.dumps(areas, separators=(',', ':')).encode('utf-8'))
           else:
-            try:
-              area = next(a for a in areas if a['id'] == int(rpath))
-            except StopIteration:
-              area = None
-            if area is not None:
-              client.sendall(json.dumps(area, separators=(',', ':')).encode('utf-8'))
-      if method == 'POST':
-        body = raw_request.splitlines()[-1]
-        shot_to_save = json.loads(body)
-        if len(path) == 5:
-          # Not implemented yet
-          msg = '{"message":"Areas update not yet implemented"}'
-          client.sendall(msg.encode('utf-8'))
-        else:
-          rpath = path[6:]
-          if '/' in rpath:
-            sp = rpath.split('/')
-            try:
-              area = next((a for a in areas if a['id'] == int(sp[0])))
-            except StopIteration:
-              area = None
-            if area is not None:
-              try:
-                shot = next((s for s in area['shots'] if s['name'] == sp[1]))
-              except StopIteration:
-                shot = None
-              if shot is not None:
-                shot['name'] = shot_to_save['name']
-                shot['config']['speed'] = shot_to_save['config']['speed']
-                shot['config']['angle'] = shot_to_save['config']['angle']
-                shot['config']['slope'] = shot_to_save['config']['slope']
-                shot['config']['height'] = shot_to_save['config']['height']
-                msg = '{"message":"Shot has been updated: ' + sp[1] + '"}'
-                client.sendall(msg.encode('utf-8'))
-              else:
-                area['shots'].append(shot_to_save)
-                msg = '{"message":"New shot has been saved: ' + sp[1] + '"}'
-                client.sendall(msg.encode('utf-8'))
+            o = find_obj(areas, path[6:])
+            if o['code'] | 1 != o['code']:
+              client.sendall(json.dumps(o['obj'], separators=(',', ':')).encode('utf-8'))
             else:
-              # To be more precise: id not valid
-              msg = '{"message":"Area ID not valid"}'
+              msg = '{"msg":"' + o['msg'] + '}'
               client.sendall(msg.encode('utf-8'))
+        elif method == 'POST':
+          body = raw_request.splitlines()[-1]
+          to_save = json.loads(body)
+          if len(path) == 5:
+            # Not implemented yet
+            client.sendall('{"msg":"Areas update not yet implemented"}'.encode('utf-8'))
+          else:
+            o = find_obj(areas, path[6:])
+            if o['code'] == 0:
+              o['obj']['name'] = to_save['name']
+              o['obj']['config']['speed'] = to_save['config']['speed']
+              o['obj']['config']['angle'] = to_save['config']['angle']
+              o['obj']['config']['slope'] = to_save['config']['slope']
+              o['obj']['config']['height'] = to_save['config']['height']
+              msg = '{"msg":"Shot ' + o['shot'] + ' has been updated in area ' + o['area'] + '"}'
+              save(areas)
+              client.sendall(msg.encode('utf-8'))
+            elif o['code'] == 1:
+              o['obj'].append(to_save)
+              msg = '{"msg":"New shot has been saved in area ' + o['area'] + ': ' + o['shot'] + '"}'
+              save(areas)
+              client.sendall(msg.encode('utf-8'))
+            elif o['code'] == 2:
+              o['obj']['shots'] = []
+              for s in to_save:
+                o['obj']['shots'].append({
+                  'name': to_save['name'],
+                  'config': {
+                    'speed': to_save['config']['speed'],
+                    'angle': to_save['config']['angle'],
+                    'slope': to_save['config']['slope'],
+                    'height': to_save['config']['height']
+                  }
+                })
+              msg = '{"msg":"New shots have been saved in area ' + o['area'] + '"}'
+              save(areas)
+              client.sendall(msg.encode('utf-8'))
+            elif o['code'] == 3:
+              msg = '{"msg":"' + o['msg'] + '}'
+              client.sendall(msg.encode('utf-8'))
+            else:
+              client.sendall('{"msg":"An unexpected error occured"}'.encode('utf-8'))
+        elif method == 'DELETE':
+          if len(path) == 5:
+            client.sendall('{"msg":"Nothing to delete"}'.encode('utf-8'))
+          else:
+            o = find_obj(areas, path[6:])
+            if o['code'] & 1 == 1:
+              client.sendall('{"msg":"Nothing to delete"}'.encode('utf-8'))
+            elif o['code'] == 0:
+              o['par'] = [s for s in o['par'] if s['name'] != o['shot']]
+              msg = '{"msg":"Shot ' + o['name'] + ' has been removed from area ' + o['area'] + '"}'
+              client.sendall(msg.encode('utf-8'))
+            elif o['code'] == 2:
+              o['obj']['shots'] = []
+              msg = '{"msg":"All shots have been removed from area ' + o['area'] + '"}'
+              client.sendall(msg.encode('utf-8'))
+        else:
+          msg = '{"msg":"The method ' + method + ' is not implemented"}'
+          client.sendall(msg.encode('utf-8'))
+      elif path.startswith('/preview'):
+        if method == 'POST':
+          body = raw_request.splitlines()[-1]
+          params = json.loads(body)
+          if len(path) == 8:
+            st = check_params(params)
+            if st == 0:
+              Shooter.start({
+                'seq': [{
+                  'speed': int(params['speed']),
+                  'angle': int(params['angle']),
+                  'slope': int(params['slope']),
+                  'height': int(params['height']),
+                  'recovery': 0,
+                  'delay': 0
+                }],
+                'mode': 'loop',
+                'order': 'normal',
+                'shots': 1000000,
+                'cycle': 3000
+              })
+              client.sendall('{"msg":"Started"}'.encode('utf-8'))
+            else:
+              client.sendall('{"msg":"An error occured"}'.encode('utf-8'))
           else:
             # Not implemented yet
-            msg = '{"message":"Shots update not yet implemented"}'
-            client.sendall(msg.encode('utf-8'))
-      if method == 'DELETE':
-        if len(path) == 5:
-          # Not implemented yet
-          msg = '{"message":"Areas update not yet implemented"}'
-          client.sendall(msg.encode('utf-8'))
+            client.sendall('{"msg":"Start with parameters not yet implemented"}'.encode('utf-8'))
         else:
-          rpath = path[6:]
-          if '/' in rpath:
-            sp = rpath.split('/')
-            try:
-              area = next((a for a in areas if a['id'] == int(sp[0])))
-            except StopIteration:
-              area = None
-            if area is not None:
-              try:
-                shot = next((s for s in area['shots'] if s['name'] == sp[1]))
-              except StopIteration:
-                shot = None
-              if shot is not None:
-                shot['name'] = shot_to_save['name']
-                shot['config']['speed'] = shot_to_save['config']['speed']
-                shot['config']['angle'] = shot_to_save['config']['angle']
-                shot['config']['slope'] = shot_to_save['config']['slope']
-                shot['config']['height'] = shot_to_save['config']['height']
-                msg = '{"message":"Shot has been updated: ' + sp[1] + '"}'
-                client.sendall(msg.encode('utf-8'))
-              else:
-                area['shots'].append(shot_to_save)
-                msg = '{"message":"New shot has been saved: ' + sp[1] + '"}'
-                client.sendall(msg.encode('utf-8'))
-            else:
-              # To be more precise: id not valid
-              msg = '{"message":"Area ID not valid"}'
-              client.sendall(msg.encode('utf-8'))
+          msg = '{"msg":"The method ' + method + ' is not implemented"}'
+          client.sendall(msg.encode('utf-8'))
+      elif path.startswith('/stop'):
+        if method == 'GET':
+          if len(path) == 5:
+            Shooter.stop()
+            client.sendall('{"msg":"Stopped"}'.encode('utf-8'))
           else:
             # Not implemented yet
-            msg = '{"message":"Shots update not yet implemented"}'
-            client.sendall(msg.encode('utf-8'))
+            client.sendall('{"msg":"Stop does not take any url parameters"}'.encode('utf-8'))
+        else:
+          msg = '{"msg":"The method ' + method + ' is not implemented"}'
+          client.sendall(msg.encode('utf-8'))
+      elif path == '/quit':
+        client.sendall('End'.encode('utf-8'))
+        test = False
+        Shooter.kill()
+    client.close()
 
-    elif path == '/quit':
-      client.sendall('End'.encode('utf-8'))
-      test = False
-  client.close()
+
+MicroSD.init()
+AccessPoint.init()
+with open(default_config, 'r') as file:
+  areas = json.load(file)
+shuttle_handler = _thread.start_new_thread(run_cycle, ())
+main()
+

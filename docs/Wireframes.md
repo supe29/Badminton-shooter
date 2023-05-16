@@ -1,5 +1,6 @@
 # Web application wireframe
 Page when configuring a shot, after clicking on Config button
+
 ![Wireframe of shot configuration page](../img/wireframe-shot-configuration.png)
 
 The first dropdown button lists all shots already saved for the shuttle drop target.

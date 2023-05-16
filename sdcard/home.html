@@ -102,25 +102,25 @@
   <div class="nav">
     <input type="button" id='train' onClick="toggleMode('training')" value="Training" />
     <input type="button" id='config' onClick="toggleMode('config')" value="Config" />
+    <input type="button" id='quit' onClick="quit()" value="Exit" />
   </div>
   <div id="dconf">
     <p>Select the area to configure</p>
     <div id="fconf">
       <select id='names' onChange='updateShot()'></select>
       <br>
+      <input type="button" value="Preview" onClick="preview()" />
+      <input type="button" value="Stop" onClick="stop()" />
+      <br>
       <input type="text" id='name' placeholder="Name" />
       <br>
-      <input type="text" id='speed' placeholder="Speed" />
-      <input type="button" value="Preview" />
+      <input type="number" id='speed' placeholder="Speed" />
       <br>
-      <input type="text" id='angle' placeholder="Angle" />
-      <input type="button" value="Preview" />
+      <input type="number" id='angle' placeholder="Angle" />
       <br>
-      <input type="text" id='slope' placeholder="Slope" />
-      <input type="button" value="Preview" />
+      <input type="number" id='slope' placeholder="Slope" />
       <br>
-      <input type="text" id='height' placeholder="Height" />
-      <input type="button" value="Preview" />
+      <input type="number" id='height' placeholder="Height" />
       <br>
       <input type="button" onClick='save()' value="Save" />
       <input type="button" onClick='cancel()' value="Cancel" />
@@ -174,6 +174,71 @@
           });
       }
     }
+
+    function errorValue(val, min, max) {
+      const s = Number(val);
+      return (isNaN(s) || s < min || s > max);
+    }
+
+    function preview() {
+      console.log('preview');
+      let err = 0;
+      if (errorValue(speed.value, 0, 100)) {
+        err += 1;
+      }
+      if (errorValue(angle.value, 0, 180)) {
+        err += 2;
+      }
+      if (errorValue(slope.value, 0, 180)) {
+        err += 4;
+      }
+      if (errorValue(height.value, 0, 40)) {
+        err += 8;
+      }
+      if (err === 0) {
+        console.log(`http://${target}/preview`);
+        const test = {
+          speed: speed.value,
+          angle: angle.value,
+          slope: slope.value,
+          height: height.value
+        };
+        const body = JSON.stringify(test);
+        fetch(`http://${target}/preview`, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: body
+        })
+          .then(r => r.json())
+          .then(r => {
+            console.log(r);
+          });
+      } else {
+        console.log(err)
+      }
+    }
+
+    function stop() {
+      console.log('preview');
+      fetch(`http://${target}/stop`)
+        .then(r => r.json())
+        .then(r => {
+          console.log(r);
+        });
+    }
+
+    function quit() {
+      console.log('preview');
+      fetch(`http://${target}/quit`)
+        .then(r => r.json())
+        .then(r => {
+          console.log(r);
+        });
+    }
+
     function updateShot() {
       console.log('test');
       const n = names.options[names.selectedIndex].id;
@@ -209,7 +274,6 @@
         .then(r => r.json())
         .then(r => {
           console.log(r);
-          alert(r);
         });
       fc.style.display = 'none';
       names.innerHTML = '';
