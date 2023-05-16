@@ -2,18 +2,20 @@ from machine import Pin, PWM
 from utime import sleep, sleep_ms, sleep_us, ticks_ms, ticks_us, ticks_diff
 from random import randrange
 
+
+
 class Shooter:
   run = False
   hold_shuttle_motor = PWM(Pin(6)) # For x the angle in °, duty(x) = 36x + 1600
   push_shuttle_motor = PWM(Pin(7)) # For x the angle in °, duty(x) = 36x + 1600
   angle_motor = PWM(Pin(10)) # For x the angle in °, duty(x) = 24x + 1826
   slope_motor = PWM(Pin(11)) # For x the angle in °, duty(x) = 24x + 1826
-  left_motor_in1 = Pin(17, Pin.OUT)
-  left_motor_in2 = Pin(18, Pin.OUT)
-  right_motor_in1 = Pin(19, Pin.OUT)
-  right_motor_in2 = Pin(20, Pin.OUT)
-  left_motor_en = PWM(Pin(16))
-  right_motor_en = PWM(Pin(21))
+  right_motor_in1 = Pin(17, Pin.OUT)
+  right_motor_in2 = Pin(18, Pin.OUT)
+  left_motor_in1 = Pin(19, Pin.OUT)
+  left_motor_in2 = Pin(20, Pin.OUT)
+  right_motor_en = PWM(Pin(16))
+  left_motor_en = PWM(Pin(21))
   cylinder_in1 = Pin(14, Pin.OUT)
   cylinder_in2 = Pin(15, Pin.OUT)
   distance_sensor_trigger = Pin(13, Pin.OUT)
@@ -28,6 +30,7 @@ class Shooter:
   mode = 'once'
   order = 'normal'
   alive = True
+
 
   @classmethod
   def __check_height_distance(self):
@@ -61,20 +64,24 @@ class Shooter:
       error_counter += 1
     return height
 
+
   @classmethod
   def __move_up(self):
     self.cylinder_in1.high()
     self.cylinder_in2.low()
+
 
   @classmethod
   def __move_down(self):
     self.cylinder_in1.low()
     self.cylinder_in2.high()
 
+
   @classmethod
   def __move_stop(self):
     self.cylinder_in1.low()
     self.cylinder_in2.low()
+
 
   @classmethod
   def __set_height(self, new_height):
@@ -82,7 +89,7 @@ class Shooter:
     print(height)
     if height != -1 and height != -2:
       delta = height - new_height
-      if delta < -1.5 or delta > 1.5:
+      if delta < -2 or delta > 2:
         if height < new_height:
           self.__move_up()
           while height < new_height and height != -1 and height != -2:
@@ -99,35 +106,40 @@ class Shooter:
     elif height == -2:
       print('The sensor did not receive any echo')
 
+
   @classmethod
   def __throw_start(self):
-    self.left_motor_in1.high()
-    self.left_motor_in2.low()
-    self.right_motor_in1.low()
-    self.right_motor_in2.high()
+    self.right_motor_in1.high()
+    self.right_motor_in2.low()
+    self.left_motor_in1.low()
+    self.left_motor_in2.high()
 
   @classmethod
   def __throw_stop(self):
-    self.left_motor_in1.low()
-    self.left_motor_in2.low()
     self.right_motor_in1.low()
     self.right_motor_in2.low()
+    self.left_motor_in1.low()
+    self.left_motor_in2.low()
+
 
   @classmethod
   def __set_speed(self, speed):
     duty = 455 * speed + 20000
-    self.left_motor_en.duty_u16(duty)
     self.right_motor_en.duty_u16(duty)
+    self.left_motor_en.duty_u16(duty)
+
 
   @classmethod
   def __set_angle(self, angle):
     duty = 24 * angle + 1826
     self.angle_motor.duty_u16(duty)
 
+
   @classmethod
   def __set_slope(self, slope):
     duty = 24 * slope + 1826
     self.slope_motor.duty_u16(duty)
+
 
   @classmethod
   def __set_program(self, program):
@@ -180,11 +192,11 @@ class Shooter:
     print('set_position')
     delay_start = ticks_ms()
 
+    self.cycle = self.default_cycle
+    self.__set_height(self.current_shot['height'])
     self.__set_speed(self.current_shot['speed'])
     self.__set_angle(self.current_shot['angle'])
     self.__set_slope(self.current_shot['slope'])
-    self.__set_height(self.current_shot['height'])
-    self.cycle = self.default_cycle
 
     delay_end = ticks_ms()
 
@@ -209,8 +221,8 @@ class Shooter:
 
   @classmethod
   def init(self):
-    self.left_motor_en.freq(1000)
     self.right_motor_en.freq(1000)
+    self.left_motor_en.freq(1000)
     self.angle_motor.freq(50)
     self.slope_motor.freq(50)
     self.hold_shuttle_motor.freq(50)
@@ -240,10 +252,10 @@ class Shooter:
       if self.run:
         while self.alive and self.run and self.current_shot is not None:
           print('start_cycle')
-          cycle_start = ticks_ms()
 
           self.__set_shot_position()
 
+          cycle_start = ticks_ms()
           # Release the shuttle, then block the upcoming shuttle after 0.2 second
           # Motor position for releasing the shuttle: 80°
           # duty(80) = int(((320 x 80) / 9) + 1600) = 4444
@@ -294,3 +306,4 @@ class Shooter:
     self.alive = False
     self.__throw_stop()
     self.__move_stop()
+
