@@ -70,6 +70,10 @@
       fill: #3399ff
     }
 
+    g.selected circle {
+      fill: #ff6600
+    }
+
     text {
       font-size: 7px;
       font-family: Calibri
@@ -89,8 +93,19 @@
     }
 
     #dconf,
-    #fconf {
+    #fconf,
+    .input-error {
       display: none
+    }
+
+    .input-error {
+      color: #ff4242;
+      font-size: small;
+    }
+
+    #divTraining,
+    .input-error.show {
+      display: block
     }
   </style>
 </head>
@@ -126,6 +141,39 @@
       <input type="button" onClick='cancel()' value="Cancel" />
     </div>
   </div>
+  <div id="dtrain">
+    <h2>Select the areas where you would like to train</h2>
+    <div>
+      <label>Mode:</label>
+      <select id="training-mode" onchange="checkTextValue(this, 'training-mode-error', 'loop', 'once')">
+        <option value="loop">loop</option>
+        <option value="once" selected>once</option>
+      </select>
+      <div id='training-mode-error' class='input-error'></div>
+      <br>
+      <label>Order:</label>
+      <select id="training-order" onchange="checkTextValue(this, 'training-order-error', 'random', 'normal')">
+        <option value="normal" selected>normal</option>
+        <option value="random">random</option>
+      </select><br>
+      <div id='training-order-error' class='input-error'></div>
+      <label>Numbers of shuttle to throw:</label>
+      <input type="text" id='shots' onchange='checkValue(this, "shots-error", 0, 600)' placeholder="Shots" />
+      <div id='shots-error' class='input-error'></div>
+      <br>
+      <label>Cycle (number of seconds between 2 shots):</label>
+      <input type="text" id='cycle' onchange="checkValue(this, 'cycle-error', 0, 60)" placeholder="Cycle" />
+      <div id='cycle-error' class='input-error'></div>
+      <br>
+      <h4>Select your shot</h4>
+      <div id="shots-selection"></div>
+      <br>
+      <h3>Shots selected</h3>
+      <ul id="shots-selected"></ul>
+      <input type="button" onClick='launch_training()' value="Go" />
+      <input type="button" onClick='clear_training()' value="Clear" />
+    </div>
+  </div>
   <h1>Court</h1>
   <svg id="court" viewBox="0 0 240 240" style="width:50%">
     <rect x="20.5" y="0.5" width="199" height="219" />
@@ -145,6 +193,17 @@
     const bc = document.getElementById('config');
     const dc = document.getElementById('dconf');
     const fc = document.getElementById('fconf');
+    const divTraining = document.getElementById('dtrain');
+    const shotSelected = document.getElementById('shots-selected');
+    const shotSelection = document.getElementById('shots-selection');
+    const trainingModeValue = document.getElementById('training-mode');
+    const trainingOrderValue = document.getElementById('training-order');
+    const shotsValue = document.getElementById('shots');
+    const cycleValue = document.getElementById('cycle');
+    const cycleError = document.getElementById('cycle-error')
+    const shotsError = document.getElementById('shots-error')
+    const modeError = document.getElementById('mode-error')
+    const orderError = document.getElementById('order-error')
     const names = document.getElementById('names');
     const shot = document.getElementById('name');
     const speed = document.getElementById('speed');
@@ -152,13 +211,31 @@
     const slope = document.getElementById('slope');
     const height = document.getElementById('height');
     let shots = [];
+    let trainingShots = [];
     let areaSelected = 0;
 
     const cons = (e) => {
       const g = e.currentTarget.id.replace('g-', '');
+      const allAreaButtons = document.getElementsByTagName('g');
+      for (let i = 0; i < allAreaButtons.length; ++i) {
+        allAreaButtons[i].setAttribute("class", '');
+      }
+      e.currentTarget.setAttribute("class", 'selected');
       areaSelected = parseInt(g);
       if (mode === 'training') {
-        console.log(e.currentTarget.fn);
+        fetch(`http://${target}/area/${g}`)
+          .then(response => response.json())
+          .then(response => {
+            console.log('fetch area');
+            divTraining.style.display = 'block';
+            shots = [...response.shots];
+            console.log(shots);
+            let n = '';
+            for (let i = 0; i < shots.length; ++i) {
+              n += `<input type="button" onClick='select_shot(${i}, ${g})' value="${shots[i].name}"/>`;
+            }
+            shotSelection.innerHTML = n;
+          })
       } else if (mode === 'config') {
         fetch(`http://${target}/area/${g}`)
           .then(r => r.json())
@@ -174,6 +251,99 @@
           });
       }
     }
+
+
+    //// Training area
+
+    function clear_training() {
+      trainingShots = [];
+      shotSelected.innerHTML = '';
+    }
+
+    function select_shot(index, area) {
+      console.log(trainingShots);
+      trainingShots.push({ ...shots[index].config, recovery: 0, delay: 0 });
+      console.log(trainingShots);
+      shotSelected.innerHTML += `<li>${area}. ${shots[index].name}</li>`;
+    }
+
+    function checkTextValue(e, id) {
+      let error = true;
+      for (let i = 2; i < arguments.length; ++i) {
+        if (arguments[i] === e.value) {
+          error = false;
+          break;
+        }
+      }
+
+      if (error) {
+        document.getElementById(id).innerText = 'Please choose a correct value';
+        document.getElementById(id).className = 'input-error show';
+        return 1;
+      } else {
+        document.getElementById(id).innerText = '';
+        document.getElementById(id).className = 'input-error';
+        return 0;
+      }
+    }
+
+    function checkValue(e, id, min, max) {
+      const errorCheck = Number(e.value);
+      if (isNaN(errorCheck)) {
+        document.getElementById(id).innerText = 'Please provide a valid number';
+        document.getElementById(id).className = 'input-error show';
+        return 1;
+      } else if (errorCheck < min || errorCheck > max) {
+        document.getElementById(id).innerText = `Please provide a number between ${min} and ${max}`;
+        document.getElementById(id).className = 'input-error show';
+        return 1;
+      } else {
+        document.getElementById(id).innerText = '';
+        document.getElementById(id).className = 'input-error';
+        return 0;
+      }
+    }
+
+    function checkTraining() {
+      let retValue = 0;
+
+      retValue += checkTextValue(trainingModeValue, 'training-mode-error', 'loop', 'once');
+      retValue += checkTextValue(trainingOrderValue, 'training-order-error', 'random', 'normal');
+      retValue += checkValue(shotsValue, 'shots-error', 0, 600);
+      retValue += checkValue(cycleValue, 'cycle-error', 0, 60);
+
+      return retValue;
+    }
+
+    function launch_training() {
+      let errorValue = checkTraining();
+      console.log(errorValue);
+      if (!errorValue && trainingShots.length > 0) {
+        const trainingProgram = {
+          seq: [...trainingShots],
+          mode: trainingModeValue.value,
+          order: trainingOrderValue.value,
+          cycle: Number(cycleValue.value),
+          shots: Number(shotsValue.value)
+        }
+        const body = JSON.stringify(trainingProgram);
+        console.log(body);
+        fetch(`http://${target}/training`, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: body
+        })
+          .then(r => r.json())
+          .then(r => {
+            console.log(r);
+          });
+      }
+    }
+
+    //////////////////////
 
     function errorValue(val, min, max) {
       const s = Number(val);
@@ -297,12 +467,14 @@
       if (m === 'training') {
         dc.style.display = 'none';
         fc.style.display = 'none';
+        divTraining.style.display = 'block'
         bt.className = '';
         bc.className = 'b';
         bt.disabled = true;
         bc.disabled = false;
       } else {
         dc.style.display = 'block';
+        divTraining.style.display = 'none'
         bt.className = 'b';
         bc.className = '';
         bt.disabled = false;

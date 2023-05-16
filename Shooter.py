@@ -252,9 +252,6 @@ class Shooter:
       if self.run:
         while self.alive and self.run and self.current_shot is not None:
           print('start_cycle')
-
-          self.__set_shot_position()
-
           cycle_start = ticks_ms()
           # Release the shuttle, then block the upcoming shuttle after 0.2 second
           # Motor position for releasing the shuttle: 80°
@@ -272,15 +269,17 @@ class Shooter:
           sleep(.8)
 
           self.__next_shot()
+          if self.current_shot is not None:
+            self.__set_shot_position()
 
-          # Wait the next cycle
-          cycle_end = ticks_ms()
-          remaining_time = self.cycle - ticks_diff(cycle_end, cycle_start)
-          print('remaining_time')
-          print(remaining_time)
-          if remaining_time > 0:
-            sleep_ms(remaining_time)
-          print('end_cycle')
+            # Wait the next cycle
+            cycle_end = ticks_ms()
+            remaining_time = self.cycle - ticks_diff(cycle_end, cycle_start)
+            print('remaining_time')
+            print(remaining_time)
+            if remaining_time > 0:
+              sleep_ms(remaining_time)
+            print('end_cycle')
         sleep(1)
       else:
         sleep(1)
@@ -291,6 +290,7 @@ class Shooter:
   def start(self, program):
     self.__set_program(program)
     self.__throw_start()
+    self.__set_shot_position()
     self.run = True
 
 

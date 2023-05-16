@@ -1,0 +1,1324 @@
+[{
+  "id": 1,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 70,
+      "angle": 21,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 40,
+      "angle": 21,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 60,
+      "angle": 21,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 2,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 70,
+      "angle": 44,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 40,
+      "angle": 44,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 60,
+      "angle": 44,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 3,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 70,
+      "angle": 67,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 40,
+      "angle": 67,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 60,
+      "angle": 67,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 4,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 70,
+      "angle": 90,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 40,
+      "angle": 90,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 60,
+      "angle": 90,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 5,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 70,
+      "angle": 113,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 40,
+      "angle": 113,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 60,
+      "angle": 113,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 6,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 70,
+      "angle": 136,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 40,
+      "angle": 136,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 60,
+      "angle": 136,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 7,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 70,
+      "angle": 159,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 40,
+      "angle": 159,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 60,
+      "angle": 159,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 8,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 75,
+      "angle": 21,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 45,
+      "angle": 21,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 65,
+      "angle": 21,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 9,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 75,
+      "angle": 44,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 45,
+      "angle": 44,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 65,
+      "angle": 44,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 10,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 75,
+      "angle": 67,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 45,
+      "angle": 67,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 65,
+      "angle": 67,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 11,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 75,
+      "angle": 90,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 45,
+      "angle": 90,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 65,
+      "angle": 90,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 12,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 75,
+      "angle": 113,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 45,
+      "angle": 113,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 65,
+      "angle": 113,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 13,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 75,
+      "angle": 136,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 45,
+      "angle": 136,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 65,
+      "angle": 136,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 14,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 75,
+      "angle": 159,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 45,
+      "angle": 159,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 65,
+      "angle": 159,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 15,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 80,
+      "angle": 21,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 50,
+      "angle": 21,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 70,
+      "angle": 21,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 16,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 80,
+      "angle": 44,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 50,
+      "angle": 44,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 70,
+      "angle": 44,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 17,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 80,
+      "angle": 67,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 50,
+      "angle": 67,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 70,
+      "angle": 67,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 18,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 80,
+      "angle": 90,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 50,
+      "angle": 90,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 70,
+      "angle": 90,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 19,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 80,
+      "angle": 113,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 50,
+      "angle": 113,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 70,
+      "angle": 113,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 20,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 80,
+      "angle": 136,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 50,
+      "angle": 136,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 70,
+      "angle": 136,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 21,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 80,
+      "angle": 159,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 50,
+      "angle": 159,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 70,
+      "angle": 159,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 22,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 85,
+      "angle": 21,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 55,
+      "angle": 21,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 75,
+      "angle": 21,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 23,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 85,
+      "angle": 44,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 55,
+      "angle": 44,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 75,
+      "angle": 44,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 24,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 85,
+      "angle": 67,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 55,
+      "angle": 67,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 75,
+      "angle": 67,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 25,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 85,
+      "angle": 90,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 55,
+      "angle": 90,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 75,
+      "angle": 90,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 26,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 85,
+      "angle": 113,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 55,
+      "angle": 113,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 75,
+      "angle": 113,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 27,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 85,
+      "angle": 136,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 55,
+      "angle": 136,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 75,
+      "angle": 136,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 28,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 85,
+      "angle": 159,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 55,
+      "angle": 159,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 75,
+      "angle": 159,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 29,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 90,
+      "angle": 21,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 60,
+      "angle": 21,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 80,
+      "angle": 21,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 30,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 90,
+      "angle": 44,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 60,
+      "angle": 44,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 80,
+      "angle": 44,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 31,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 90,
+      "angle": 67,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 60,
+      "angle": 67,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 80,
+      "angle": 67,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 32,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 90,
+      "angle": 90,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 60,
+      "angle": 90,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 80,
+      "angle": 90,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 33,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 90,
+      "angle": 113,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 60,
+      "angle": 113,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 80,
+      "angle": 113,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 34,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 90,
+      "angle": 136,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 60,
+      "angle": 136,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 80,
+      "angle": 136,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 35,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 90,
+      "angle": 159,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 60,
+      "angle": 159,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 80,
+      "angle": 159,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 36,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 95,
+      "angle": 21,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 65,
+      "angle": 21,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 85,
+      "angle": 21,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 37,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 95,
+      "angle": 44,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 65,
+      "angle": 44,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 85,
+      "angle": 44,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 38,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 95,
+      "angle": 67,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 65,
+      "angle": 67,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 85,
+      "angle": 67,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 39,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 95,
+      "angle": 90,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 65,
+      "angle": 90,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 85,
+      "angle": 90,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 40,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 95,
+      "angle": 113,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 65,
+      "angle": 113,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 85,
+      "angle": 113,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 41,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 95,
+      "angle": 136,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 65,
+      "angle": 136,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 85,
+      "angle": 136,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 42,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 95,
+      "angle": 159,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 65,
+      "angle": 159,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 85,
+      "angle": 159,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 43,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 100,
+      "angle": 21,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 70,
+      "angle": 21,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 90,
+      "angle": 21,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 44,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 100,
+      "angle": 44,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 70,
+      "angle": 44,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 90,
+      "angle": 44,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 45,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 100,
+      "angle": 67,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 70,
+      "angle": 67,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 90,
+      "angle": 67,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 46,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 100,
+      "angle": 90,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 70,
+      "angle": 90,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 90,
+      "angle": 90,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 47,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 100,
+      "angle": 113,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 70,
+      "angle": 113,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 90,
+      "angle": 113,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 48,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 100,
+      "angle": 136,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 70,
+      "angle": 136,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 90,
+      "angle": 136,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}, {
+  "id": 49,
+  "shots": [{
+    "name": "lob",
+    "config": {
+      "speed": 100,
+      "angle": 159,
+      "slope": 45,
+      "height": 10
+    }
+  }, {
+    "name": "drive",
+    "config": {
+      "speed": 70,
+      "angle": 159,
+      "slope": 90,
+      "height": 30
+    }
+  }, {
+    "name": "smash",
+    "config": {
+      "speed": 90,
+      "angle": 159,
+      "slope": 135,
+      "height": 40
+    }
+  }]
+}]

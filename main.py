@@ -18,12 +18,12 @@ areas = []
 
 def int_val(str, min, max):
   try:
-    s = int(str)
+    value = int(str)
   except ValueError:
-    s = -1
-  if s < min or s > max:
-    s = -1
-  return s
+    value = -1
+  if value < min or value > max:
+    value = -1
+  return value
 
 def get(arr, key, val):
   try:
@@ -55,27 +55,64 @@ def save(a):
 def run_cycle():
   Shooter.init()
 
-def check_params(p):
+def check_params(param, training=False):
   ret_value = 0
 
   # Speed
-  x = int_val(p['speed'], 0, 100)
-  if x == -1:
+  value = int_val(param['speed'], 0, 100)
+  if value == -1:
     ret_value = 1
 
   # Angle
-  x = int_val(p['angle'], 0, 180)
-  if x == -1:
+  value = int_val(param['angle'], 0, 180)
+  if value == -1:
     ret_value += 2
 
   # Slope
-  x = int_val(p['slope'], 0, 180)
-  if x == -1:
+  value = int_val(param['slope'], 0, 180)
+  if value == -1:
     ret_value += 4
 
   # Height
-  x = int_val(p['height'], 0, 40)
-  if x == -1:
+  value = int_val(param['height'], 0, 40)
+  if value == -1:
+    ret_value += 8
+
+  if training:
+    # Recovery
+    value = int_val(param['recovery'], 0, 60)
+    if value == -1:
+      ret_value += 16
+
+    # Delay
+    value = int_val(param['delay'], 0, 60)
+    if value == -1:
+      ret_value += 32
+
+  return ret_value
+
+def check_training_parameters(param):
+  ret_value = 0
+
+  valid_mode = ['loop', 'once']
+  valid_order = ['random', 'normal']
+
+  # Mode
+  if param['mode'] not in valid_mode:
+    ret_value = 1
+
+  # Order
+  if param['order'] not in valid_order:
+    ret_value += 2
+
+  # Shots number
+  value = int_val(param['shots'], 0, 600)
+  if value == -1:
+    ret_value += 4
+
+  # Default time between 2 shots
+  value = int_val(param['cycle'], 0, 60)
+  if value == -1:
     ret_value += 8
 
   return ret_value
@@ -198,6 +235,90 @@ def main():
         else:
           msg = '{"msg":"The method ' + method + ' is not implemented"}'
           client.sendall(msg.encode('utf-8'))
+      elif path.startswith('/training'):
+        if method == 'POST':
+          body = raw_request.splitlines()[-1]
+          params = json.loads(body)
+          if len(path) == 9:
+            error_handler = 0
+            err_message = []
+            err = 0
+            for param in params['seq']:
+              err = check_params(param, training=True)
+              error_handler += err
+              if err & 1 == 1:
+                err_message.append({
+                  'message': 'The speed is incorrect',
+                  'value': param['speed']
+                })
+              if err & 2 == 2:
+                err_message.append({
+                  'message': 'The angle is incorrect',
+                  'value': param['angle']
+                })
+              if err & 4 == 4:
+                err_message.append({
+                  'message': 'The slope is incorrect',
+                  'value': param['slope']
+                })
+              if err & 8 == 8:
+                err_message.append({
+                  'message': 'The height is incorrect',
+                  'value': param['height']
+                })
+              if err & 16 == 16:
+                err_message.append({
+                  'message': 'The recovery is incorrect',
+                  'value': param['recovery']
+                })
+              if err & 32 == 32:
+                err_message.append({
+                  'message': 'The delay is incorrect',
+                  'value': param['delay']
+                })
+
+            err = check_training_parameters(params)
+            error_handler += err
+            if err & 1 == 1:
+              err_message.append({
+                'message': 'The mode is incorrect',
+                'value': params['mode']
+              })
+            if err & 2 == 2:
+              err_message.append({
+                'message': 'The order is incorrect',
+                'value': params['order']
+              })
+            if err & 4 == 4:
+              err_message.append({
+                'message': 'The shots is incorrect',
+                'value': params['shots']
+              })
+            if err & 8 == 8:
+              err_message.append({
+                'message': 'The cycle is incorrect',
+                'value': params['cycle']
+              })
+
+
+            if error_handler == 0:
+              Shooter.start({
+                'seq': params['seq'],
+                'mode': params['mode'],
+                'order': params['order'],
+                'shots': int(params['shots']),
+                'cycle': int(params['cycle']) * 1000
+              })
+              client.sendall('{"msg":"Training started"}'.encode('utf-8'))
+            else:
+              msg = '{"msg":"Error(s) have been detected","errors":' + json.dumps(err_message, separators=(',', ':')) + '}'
+              client.sendall(msg.encode('utf-8'))
+          else:
+            # Not implemented yet
+            client.sendall('{"msg":"Training with profile is not yet implemented"}'.encode('utf-8'))
+        else:
+          msg = '{"msg":"The method ' + method + ' is not implemented"}'
+          client.sendall(msg.encode('utf-8'))
       elif path.startswith('/stop'):
         if method == 'GET':
           if len(path) == 5:
@@ -210,16 +331,16 @@ def main():
           msg = '{"msg":"The method ' + method + ' is not implemented"}'
           client.sendall(msg.encode('utf-8'))
       elif path == '/quit':
-        client.sendall('End'.encode('utf-8'))
+        client.sendall('{"msg":"Quitted"}'.encode('utf-8'))
         test = False
-        Shooter.kill()
     client.close()
 
+def init():
+  MicroSD.init()
+  AccessPoint.init()
+  with open(default_config, 'r') as file:
+    areas = json.load(file)
+  shuttle_handler = _thread.start_new_thread(run_cycle, ())
+  main()
 
-MicroSD.init()
-AccessPoint.init()
-with open(default_config, 'r') as file:
-  areas = json.load(file)
-shuttle_handler = _thread.start_new_thread(run_cycle, ())
-main()
-
+init()
