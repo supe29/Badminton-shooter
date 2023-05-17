@@ -1,4 +1,5 @@
 # Web application wireframe
+
 Page when configuring a shot, after clicking on Config button
 
 ![Wireframe of shot configuration page](../img/wireframe-shot-configuration.png)

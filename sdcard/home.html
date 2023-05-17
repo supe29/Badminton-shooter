@@ -3,507 +3,88 @@
 
 <head>
   <title>Badminton-shooter</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh
-    }
-
-    .nav input {
-      background-color: #e1ecf4;
-      border-radius: 3px;
-      border: 1px solid #7aa7c7;
-      box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
-      box-sizing: border-box;
-      color: #39739d;
-      cursor: pointer;
-      display: inline-block;
-      font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 1.15385;
-      margin: 0;
-      outline: none;
-      padding: 8px 0.8em;
-      position: relative;
-      text-align: center;
-      text-decoration: none;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      vertical-align: baseline;
-      white-space: nowrap
-    }
-
-    .nav input.b:focus,
-    .nav input.b:hover {
-      background-color: #b3d3ea;
-      color: #2c5777
-    }
-
-    .nav input.b:active {
-      background-color: #a0c7e4;
-      box-shadow: none;
-      color: #2c5777
-    }
-
-    .nav input:disabled {
-      cursor: default;
-      background: #3399ff;
-      color: #fff
-    }
-
-    circle {
-      fill: #f4f47d
-    }
-
-    g:hover {
-      cursor: pointer
-    }
-
-    g:hover circle {
-      fill: #3399ff
-    }
-
-    g.selected circle {
-      fill: #ff6600
-    }
-
-    text {
-      font-size: 7px;
-      font-family: Calibri
-    }
-
-    rect {
-      fill: #47a33d
-    }
-
-    path {
-      fill: none
-    }
-
-    rect,
-    path {
-      stroke: #000
-    }
-
-    #dconf,
-    #fconf,
-    .input-error {
-      display: none
-    }
-
-    .input-error {
-      color: #ff4242;
-      font-size: small;
-    }
-
-    #divTraining,
-    .input-error.show {
-      display: block
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" type="image/x-icon" href="./favicon.png">
 </head>
 
 <body>
+<div>
+  <h1>Badminton-shooter</h1>
+</div>
+<div class="nav">
+  <input type="button" id='train' onClick="toggleMode('training')" value="Training" />
+  <input type="button" id='config' onClick="toggleMode('config')" value="Config" />
+  <input type="button" id='quit' onClick="quit()" value="Exit" />
+</div>
+<div id="dconf">
+  <p>Select the area to configure</p>
+
+  <div id="fconf">
+
+    <select id='names' onChange='updateShot()'></select>
+
+    <br>
+    <input type="button" value="Preview" onClick="preview()" />
+    <input type="button" value="Stop" onClick="stop()" />
+    <br>
+    <input type="text" id='name' placeholder="Name" onchange="checkEmptyValue(this, 'name-error')"/>
+    <div id='name-error' class='input-error'></div>
+    <br>
+    <input type="text" id='speed' onchange="checkValue(this, 'speed-error', 0, 100)" placeholder="Speed" />
+    <div id='speed-error' class='input-error'></div>
+    <br>
+    <input type="text" id='angle' onchange="checkValue(this, 'angle-error', 0, 180)" placeholder="Angle" />
+    <div id='angle-error' class='input-error'></div>
+    <br>
+    <input type="text" id='slope' onchange="checkValue(this, 'slope-error', 0, 180)" placeholder="Slope" />
+    <div id='slope-error' class='input-error'></div>
+    <br>
+    <input type="text" id='height' onchange="checkValue(this, 'height-error', 0, 40)" placeholder="Height" />
+    <div id='height-error' class='input-error'></div>
+    <br>
+    <input type="button" onClick='save()' value="Save" />
+    <input type="button" onClick='cancel()' value="Cancel" />
+  </div>
+</div>
+<div id="dtrain">
+  <h2>Select the areas where you would like to train</h2>
   <div>
-    <h1>Badminton-shooter</h1>
+    <label>Mode:</label>
+    <select id="training-mode" onchange="checkTextValue(this, 'training-mode-error', 'loop', 'once')">
+      <option value="loop">loop</option>
+      <option value="once" selected>once</option>
+    </select>
+    <div id='training-mode-error' class='input-error'></div>
+    <br>
+    <label>Order:</label>
+    <select id="training-order" onchange="checkTextValue(this, 'training-order-error', 'random', 'normal')">
+      <option value="normal" selected>normal</option>
+      <option value="random">random</option>
+    </select><br>
+    <div id='training-order-error' class='input-error'></div>
+    <label>Numbers of shuttle to throw:</label>
+    <input type="text" id='shots' onchange='checkValue(this, "shots-error", 0, 600)' placeholder="Shots" />
+    <div id='shots-error' class='input-error'></div>
+    <br>
+    <label>Cycle (number of seconds between 2 shots):</label>
+    <input type="text" id='cycle' onchange="checkValue(this, 'cycle-error', 0, 60)" placeholder="Cycle" />
+    <div id='cycle-error' class='input-error'></div>
+    <br>
+    <h4>Select your shot</h4>
+    <div id="shots-selection"></div>
+    <br>
+    <h3>Shots selected</h3>
+    <ul id="shots-selected"></ul>
+    <input type="button" onClick='launch_training()' value="Go" />
+    <input type="button" onClick='clear_training()' value="Clear" />
   </div>
-  <div class="nav">
-    <input type="button" id='train' onClick="toggleMode('training')" value="Training" />
-    <input type="button" id='config' onClick="toggleMode('config')" value="Config" />
-    <input type="button" id='quit' onClick="quit()" value="Exit" />
-  </div>
-  <div id="dconf">
-    <p>Select the area to configure</p>
-    <div id="fconf">
-      <select id='names' onChange='updateShot()'></select>
-      <br>
-      <input type="button" value="Preview" onClick="preview()" />
-      <input type="button" value="Stop" onClick="stop()" />
-      <br>
-      <input type="text" id='name' placeholder="Name" />
-      <br>
-      <input type="number" id='speed' placeholder="Speed" />
-      <br>
-      <input type="number" id='angle' placeholder="Angle" />
-      <br>
-      <input type="number" id='slope' placeholder="Slope" />
-      <br>
-      <input type="number" id='height' placeholder="Height" />
-      <br>
-      <input type="button" onClick='save()' value="Save" />
-      <input type="button" onClick='cancel()' value="Cancel" />
-    </div>
-  </div>
-  <div id="dtrain">
-    <h2>Select the areas where you would like to train</h2>
-    <div>
-      <label>Mode:</label>
-      <select id="training-mode" onchange="checkTextValue(this, 'training-mode-error', 'loop', 'once')">
-        <option value="loop">loop</option>
-        <option value="once" selected>once</option>
-      </select>
-      <div id='training-mode-error' class='input-error'></div>
-      <br>
-      <label>Order:</label>
-      <select id="training-order" onchange="checkTextValue(this, 'training-order-error', 'random', 'normal')">
-        <option value="normal" selected>normal</option>
-        <option value="random">random</option>
-      </select><br>
-      <div id='training-order-error' class='input-error'></div>
-      <label>Numbers of shuttle to throw:</label>
-      <input type="text" id='shots' onchange='checkValue(this, "shots-error", 0, 600)' placeholder="Shots" />
-      <div id='shots-error' class='input-error'></div>
-      <br>
-      <label>Cycle (number of seconds between 2 shots):</label>
-      <input type="text" id='cycle' onchange="checkValue(this, 'cycle-error', 0, 60)" placeholder="Cycle" />
-      <div id='cycle-error' class='input-error'></div>
-      <br>
-      <h4>Select your shot</h4>
-      <div id="shots-selection"></div>
-      <br>
-      <h3>Shots selected</h3>
-      <ul id="shots-selected"></ul>
-      <input type="button" onClick='launch_training()' value="Go" />
-      <input type="button" onClick='clear_training()' value="Clear" />
-    </div>
-  </div>
-  <h1>Court</h1>
-  <svg id="court" viewBox="0 0 240 240" style="width:50%">
-    <rect x="20.5" y="0.5" width="199" height="219" />
-    <path d="M0,0H240V240H0V0m35,0V220m85,0V65m85,155V0m15,65H20m0,130h200" />
-  </svg></div>
-  <script>
-    let mode = 'training';
-    const target = '192.168.4.1';
-    const xCourtPos = 36;
-    const yCourtPos = 16;
-    const xCourtOffset = 28;
-    const yCourtOffset = 32;
-    const xFigOffset1 = 1.98;
-    const xFigOffset2 = 3.97;
-    const yFigOffset = 2.26;
-    const bt = document.getElementById('train');
-    const bc = document.getElementById('config');
-    const dc = document.getElementById('dconf');
-    const fc = document.getElementById('fconf');
-    const divTraining = document.getElementById('dtrain');
-    const shotSelected = document.getElementById('shots-selected');
-    const shotSelection = document.getElementById('shots-selection');
-    const trainingModeValue = document.getElementById('training-mode');
-    const trainingOrderValue = document.getElementById('training-order');
-    const shotsValue = document.getElementById('shots');
-    const cycleValue = document.getElementById('cycle');
-    const cycleError = document.getElementById('cycle-error')
-    const shotsError = document.getElementById('shots-error')
-    const modeError = document.getElementById('mode-error')
-    const orderError = document.getElementById('order-error')
-    const names = document.getElementById('names');
-    const shot = document.getElementById('name');
-    const speed = document.getElementById('speed');
-    const angle = document.getElementById('angle');
-    const slope = document.getElementById('slope');
-    const height = document.getElementById('height');
-    let shots = [];
-    let trainingShots = [];
-    let areaSelected = 0;
-
-    const cons = (e) => {
-      const g = e.currentTarget.id.replace('g-', '');
-      const allAreaButtons = document.getElementsByTagName('g');
-      for (let i = 0; i < allAreaButtons.length; ++i) {
-        allAreaButtons[i].setAttribute("class", '');
-      }
-      e.currentTarget.setAttribute("class", 'selected');
-      areaSelected = parseInt(g);
-      if (mode === 'training') {
-        fetch(`http://${target}/area/${g}`)
-          .then(response => response.json())
-          .then(response => {
-            console.log('fetch area');
-            divTraining.style.display = 'block';
-            shots = [...response.shots];
-            console.log(shots);
-            let n = '';
-            for (let i = 0; i < shots.length; ++i) {
-              n += `<input type="button" onClick='select_shot(${i}, ${g})' value="${shots[i].name}"/>`;
-            }
-            shotSelection.innerHTML = n;
-          })
-      } else if (mode === 'config') {
-        fetch(`http://${target}/area/${g}`)
-          .then(r => r.json())
-          .then(r => {
-            console.log(r);
-            fc.style.display = 'block';
-            shots = [...r.shots];
-            let n = `<option id='new' selected>New</option>`;
-            for (let i = 0; i < shots.length; ++i) {
-              n += `<option id='o-${i}'>${shots[i].name}</option>`;
-            }
-            names.innerHTML = n;
-          });
-      }
-    }
-
-
-    //// Training area
-
-    function clear_training() {
-      trainingShots = [];
-      shotSelected.innerHTML = '';
-    }
-
-    function select_shot(index, area) {
-      console.log(trainingShots);
-      trainingShots.push({ ...shots[index].config, recovery: 0, delay: 0 });
-      console.log(trainingShots);
-      shotSelected.innerHTML += `<li>${area}. ${shots[index].name}</li>`;
-    }
-
-    function checkTextValue(e, id) {
-      let error = true;
-      for (let i = 2; i < arguments.length; ++i) {
-        if (arguments[i] === e.value) {
-          error = false;
-          break;
-        }
-      }
-
-      if (error) {
-        document.getElementById(id).innerText = 'Please choose a correct value';
-        document.getElementById(id).className = 'input-error show';
-        return 1;
-      } else {
-        document.getElementById(id).innerText = '';
-        document.getElementById(id).className = 'input-error';
-        return 0;
-      }
-    }
-
-    function checkValue(e, id, min, max) {
-      const errorCheck = Number(e.value);
-      if (isNaN(errorCheck)) {
-        document.getElementById(id).innerText = 'Please provide a valid number';
-        document.getElementById(id).className = 'input-error show';
-        return 1;
-      } else if (errorCheck < min || errorCheck > max) {
-        document.getElementById(id).innerText = `Please provide a number between ${min} and ${max}`;
-        document.getElementById(id).className = 'input-error show';
-        return 1;
-      } else {
-        document.getElementById(id).innerText = '';
-        document.getElementById(id).className = 'input-error';
-        return 0;
-      }
-    }
-
-    function checkTraining() {
-      let retValue = 0;
-
-      retValue += checkTextValue(trainingModeValue, 'training-mode-error', 'loop', 'once');
-      retValue += checkTextValue(trainingOrderValue, 'training-order-error', 'random', 'normal');
-      retValue += checkValue(shotsValue, 'shots-error', 0, 600);
-      retValue += checkValue(cycleValue, 'cycle-error', 0, 60);
-
-      return retValue;
-    }
-
-    function launch_training() {
-      let errorValue = checkTraining();
-      console.log(errorValue);
-      if (!errorValue && trainingShots.length > 0) {
-        const trainingProgram = {
-          seq: [...trainingShots],
-          mode: trainingModeValue.value,
-          order: trainingOrderValue.value,
-          cycle: Number(cycleValue.value),
-          shots: Number(shotsValue.value)
-        }
-        const body = JSON.stringify(trainingProgram);
-        console.log(body);
-        fetch(`http://${target}/training`, {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: body
-        })
-          .then(r => r.json())
-          .then(r => {
-            console.log(r);
-          });
-      }
-    }
-
-    //////////////////////
-
-    function errorValue(val, min, max) {
-      const s = Number(val);
-      return (isNaN(s) || s < min || s > max);
-    }
-
-    function preview() {
-      console.log('preview');
-      let err = 0;
-      if (errorValue(speed.value, 0, 100)) {
-        err += 1;
-      }
-      if (errorValue(angle.value, 0, 180)) {
-        err += 2;
-      }
-      if (errorValue(slope.value, 0, 180)) {
-        err += 4;
-      }
-      if (errorValue(height.value, 0, 40)) {
-        err += 8;
-      }
-      if (err === 0) {
-        console.log(`http://${target}/preview`);
-        const test = {
-          speed: speed.value,
-          angle: angle.value,
-          slope: slope.value,
-          height: height.value
-        };
-        const body = JSON.stringify(test);
-        fetch(`http://${target}/preview`, {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: body
-        })
-          .then(r => r.json())
-          .then(r => {
-            console.log(r);
-          });
-      } else {
-        console.log(err)
-      }
-    }
-
-    function stop() {
-      console.log('preview');
-      fetch(`http://${target}/stop`)
-        .then(r => r.json())
-        .then(r => {
-          console.log(r);
-        });
-    }
-
-    function quit() {
-      console.log('preview');
-      fetch(`http://${target}/quit`)
-        .then(r => r.json())
-        .then(r => {
-          console.log(r);
-        });
-    }
-
-    function updateShot() {
-      console.log('test');
-      const n = names.options[names.selectedIndex].id;
-      if (n !== 'new') {
-        const i = parseInt(n.replace('o-', ''));
-        shot.value = shots[i].name;
-        speed.value = shots[i].config.speed;
-        angle.value = shots[i].config.angle;
-        slope.value = shots[i].config.slope;
-        height.value = shots[i].config.height;
-      }
-    }
-    function save() {
-      const newShot = {
-        name: shot.value,
-        config: {
-          speed: speed.value,
-          angle: angle.value,
-          slope: slope.value,
-          height: height.value
-        }
-      };
-      const body = JSON.stringify(newShot);
-      console.log('Element sent: ' + body);
-      fetch(`http://${target}/area/${areaSelected}/${newShot.name}`, {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: body
-      })
-        .then(r => r.json())
-        .then(r => {
-          console.log(r);
-        });
-      fc.style.display = 'none';
-      names.innerHTML = '';
-      shot.value = '';
-      speed.value = '';
-      angle.value = '';
-      slope.value = '';
-      height.value = '';
-    }
-    function cancel() {
-      fc.style.display = 'none';
-      names.innerHTML = '';
-      shot.value = '';
-      speed.value = '';
-      angle.value = '';
-      slope.value = '';
-      height.value = '';
-    }
-    function toggleMode(m) {
-      mode = m;
-      if (m === 'training') {
-        dc.style.display = 'none';
-        fc.style.display = 'none';
-        divTraining.style.display = 'block'
-        bt.className = '';
-        bc.className = 'b';
-        bt.disabled = true;
-        bc.disabled = false;
-      } else {
-        dc.style.display = 'block';
-        divTraining.style.display = 'none'
-        bt.className = 'b';
-        bc.className = '';
-        bt.disabled = false;
-        bc.disabled = true;
-      }
-    }
-    function courtLoad(fn) {
-      if (document.readyState === "complete" || document.readyState === "interactive") {
-        setTimeout(fn, 1);
-      } else {
-        document.addEventListener("DOMContentLoaded", fn);
-      }
-    }
-    courtLoad(function () {
-      toggleMode('training');
-      const svg = document.getElementById('court');
-      for (let i = 0; i < 7; ++i) {
-        for (let j = 0; j < 7; ++j) {
-          const id = 7 * j + i + 1;
-          const xFigOffset = id < 10 ? xFigOffset1 : xFigOffset2;
-          const g = document.createElementNS('http://www.w3.org/2000/svg', "g");
-          g.addEventListener('click', cons);
-          g.id = `g-${id}`;
-          g.innerHTML = `<circle cx="${xCourtPos + xCourtOffset * i}" cy="${yCourtPos + yCourtOffset * j}" r="7"/><text transform="translate(${xCourtPos + xCourtOffset * i - xFigOffset} ${yCourtPos + yCourtOffset * j + yFigOffset}) scale(1.12 1)">${id}</text>`;
-          svg.appendChild(g);
-        }
-      }
-    });
-  </script>
+</div>
+<h1>Court</h1>
+<svg id="court" viewBox="0 0 240 240" style="width:50%">
+  <rect x="20.5" y="0.5" width="199" height="219" />
+  <path d="M0,0H240V240H0V0m35,0V220m85,0V65m85,155V0m15,65H20m0,130h200" />
+</svg></div>
+  <script src="./main.js"></script>
 </body>
 
 </html>

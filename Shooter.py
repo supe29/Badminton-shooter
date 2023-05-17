@@ -280,6 +280,8 @@ class Shooter:
             if remaining_time > 0:
               sleep_ms(remaining_time)
             print('end_cycle')
+          else:
+            self.stop()
         sleep(1)
       else:
         sleep(1)
@@ -306,4 +308,3 @@ class Shooter:
     self.alive = False
     self.__throw_stop()
     self.__move_stop()
-

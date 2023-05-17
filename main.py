@@ -12,9 +12,20 @@ speed_duty = 0
 angle_duty = 0
 slope_duty = 0
 height_val = 0
-home = '/sd/home.html'
-default_config = '/sd/default.json'
+sd_location = '/sd'
+home = sd_location + '/home.html'
+default_config = sd_location + '/default.json'
+character_encoding_file = sd_location + '/character-encoding.json'
 areas = []
+characters_encoding = []
+
+def decode_url(str):
+  decoded_string = str
+
+  for c in characters_encoding:
+    decoded_string = decoded_string.replace(c['key'], c['value'])
+
+  return decoded_string
 
 def int_val(str, min, max):
   try:
@@ -36,11 +47,12 @@ def find_obj(areas, str):
   area = get(areas, 'id', int(sp[0]))
   if area is not None:
     if '/' in str:
-      shot = get(area['shots'], 'name', sp[1])
+      print(decode_url(sp[1]))
+      shot = get(area['shots'], 'name', decode_url(sp[1]))
       if shot is not None:
-        return {'code': 0, 'msg': 'Shot ' + sp[1] + ' was found', 'area': sp[0], 'shot': sp[1], 'obj': shot, 'area': sp[0], 'shot': sp[1], 'par': area['shots']}
+        return {'code': 0, 'msg': 'Shot ' + decode_url(sp[1]) + ' was found', 'area': sp[0], 'shot': decode_url(sp[1]), 'obj': shot, 'area': sp[0], 'shot': decode_url(sp[1]), 'par': area['shots']}
       else:
-        return {'code': 1, 'msg': 'Shot ' + sp[1] + ' was not found', 'area': sp[0], 'shot': sp[1], 'obj': area}
+        return {'code': 1, 'msg': 'Shot ' + decode_url(sp[1]) + ' was not found', 'area': sp[0], 'shot': decode_url(sp[1]), 'obj': area}
     else:
       return {'code': 2, 'msg': 'Area ' + sp[0] + ' was found', 'area': str, 'obj': area}
   else:
@@ -118,6 +130,8 @@ def check_training_parameters(param):
   return ret_value
 
 def main():
+  global areas
+
   test = True
   while test:
     client, client_addr = AccessPoint.sock.accept()
@@ -130,10 +144,12 @@ def main():
     if len(split_request) > 1:
       method = split_request[0]
       path = split_request[1]
-      if path == '/':
-        with open(home, 'r') as file:
-          html = file.read()
-        client.sendall(html.encode('utf-8'))
+      if path in ['/', '/favicon.png', '/style.css', '/main.js']:
+        filename = home if path == '/' else sd_location + path
+        print(filename)
+        with open(filename, 'rb') as file:
+          data = file.read()
+        client.sendall(data)
       elif path.startswith('/area'):
         if method == 'GET':
           if len(path) == 5:
@@ -163,13 +179,16 @@ def main():
               save(areas)
               client.sendall(msg.encode('utf-8'))
             elif o['code'] == 1:
-              o['obj'].append(to_save)
-              msg = '{"msg":"New shot has been saved in area ' + o['area'] + ': ' + o['shot'] + '"}'
-              save(areas)
-              client.sendall(msg.encode('utf-8'))
+              if to_save['name'].strip() == '':
+                client.sendall('{"msg":"The name is empty"}'.encode('utf-8'))
+              else:
+                o['obj']['shots'].append(to_save)
+                msg = '{"msg":"New shot has been saved in area ' + o['area'] + ': ' + o['shot'] + '"}'
+                save(areas)
+                client.sendall(msg.encode('utf-8'))
             elif o['code'] == 2:
               o['obj']['shots'] = []
-              for s in to_save:
+              for _ in to_save:
                 o['obj']['shots'].append({
                   'name': to_save['name'],
                   'config': {
@@ -333,14 +352,24 @@ def main():
       elif path == '/quit':
         client.sendall('{"msg":"Quitted"}'.encode('utf-8'))
         test = False
+        Shooter.kill()
     client.close()
 
-def init():
+def run():
+  global areas
+  global characters_encoding
+
   MicroSD.init()
   AccessPoint.init()
+
   with open(default_config, 'r') as file:
     areas = json.load(file)
-  shuttle_handler = _thread.start_new_thread(run_cycle, ())
+
+  with open(character_encoding_file, 'r') as file:
+    characters_encoding = json.load(file)
+
+  _thread.start_new_thread(run_cycle, ())
   main()
 
-init()
+run()
+
